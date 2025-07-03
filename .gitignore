@@ -1,0 +1,43 @@
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp/
+.pnp.js
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python/
+env/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+.vscode/ # Visual Studio Code specific files (optional, but often ignored)
+
+# React
+build/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+npm-debug.log
+yarn-error.log
+.DS_Store # macOS specific
+
+# Editor-specific
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+.Trashes
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

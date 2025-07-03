@@ -1,0 +1,170 @@
+/* frontend/src/components/KlishaModal.css */
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.85); /* خلفية شفافة أغمق بكثير لإبراز المودال */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* توسيط المودال عمودياً */
+    z-index: var(--z-modal-backdrop); /* تأكد أنه يظهر فوق كل شيء آخر */
+    font-family: var(--font-family);
+    direction: rtl;
+}
+
+.modal {
+    background-color: var(--background-card);
+    border-radius: var(--radius-xl); /* تدوير أكبر للحواف */
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.7); /* ظل أعمق وأكثر وضوحاً */
+    width: 90%;
+    max-width: 600px; /* عرض مناسب للمودال */
+    max-height: 90vh; /* ارتفاع أقصى للمودال ليناسب الشاشات الصغيرة */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* لإخفاء أي محتوى زائد */
+    animation: fadeInScale 0.4s ease-out forwards; /* تأثير ظهور أبطأ قليلاً */
+    border: 2px solid var(--primary-color); /* حدود بلون أساسي */
+    /* margin-bottom: var(--spacing-md); تم إزالة هذا الهامش بعد التوسيط العمودي */
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8); /* تم تعديل هذا ليتناسق مع التوسيط */
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--spacing-lg) var(--spacing-xl); /* زيادة المساحة الداخلية */
+    background-color: var(--primary-color); /* شريط علوي بلون أساسي */
+    color: var(--text-light);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4); /* خط سفلي أوضح */
+}
+
+.heading {
+    margin: 0;
+    font-size: var(--font-size-xl); /* حجم خط أكبر */
+    font-weight: var(--font-weight-extrabold); /* وزن خط أثقل */
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-md); /* مسافة أكبر */
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2); /* ظل نص خفيف */
+}
+
+.heading .icon-heading { /* أيقونة في العنوان */
+    color: var(--success-color); /* لون أخضر للأيقونة في العنوان */
+    font-size: var(--font-size-lg);
+}
+
+.modal-close-button {
+    background: none;
+    border: none;
+    font-size: var(--font-size-2xl); /* حجم أيقونة أكبر */
+    color: var(--text-light);
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.modal-close-button:hover {
+    transform: rotate(90deg) scale(1.1); /* تأثير أقوى */
+    color: #ffffff; /* لون أبيض ناصع عند المرور */
+}
+
+.modal-body {
+    padding: var(--spacing-xl); /* زيادة المساحة الداخلية */
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-lg); /* مسافة بين أقسام الفلترة */
+    flex-grow: 1;
+    overflow-y: auto; /* يسمح بالتمرير داخل الجسم لو المحتوى كبير */
+}
+
+.textarea {
+    width: 100%; /* العرض الكامل */
+    min-height: 200px;
+    padding: var(--spacing-md); /* مسافة داخلية أكبر */
+    margin-bottom: var(--spacing-lg); /* مسافة أكبر */
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md); /* تدوير أكبر */
+    font-size: var(--font-size-base); /* حجم خط أكبر */
+    resize: vertical; /* يمكن تغيير حجمه عمودياً */
+    font-family: var(--font-family);
+    color: var(--text-dark);
+    background-color: var(--background-base); /* خلفية أفتح قليلاً للـ textarea */
+    line-height: var(--line-height-normal); /* مسافة بين السطور */
+    box-shadow: var(--shadow-inset); /* ظل داخلي خفيف وواضح */
+}
+
+.copy-status-message { /* تنسيق رسالة حالة النسخ */
+    text-align: center;
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-dark);
+    background-color: var(--primary-light); /* خلفية شفافة بلون أساسي */
+    padding: var(--spacing-sm) var(--spacing-md);
+    border-radius: var(--radius-md);
+    margin-top: calc(-1 * var(--spacing-sm)); /* لتقليل المسافة بينه وبين الـ textarea */
+    margin-bottom: var(--spacing-md);
+}
+
+
+.modal-footer {
+    display: flex;
+    justify-content: center; /* توسيط الأزرار */
+    flex-wrap: wrap; /* للسماح بالأزرار بالنزول لسطر جديد */
+    gap: var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-xl); /* مسافة داخلية أكبر */
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-base);
+}
+
+/* استخدام كلاسات الأزرار العامة .btn */
+.modal-footer .btn {
+    padding: var(--spacing-md) var(--spacing-xl); /* حجم أكبر للأزرار */
+    font-size: var(--font-size-lg); /* حجم خط أكبر */
+    box-shadow: var(--shadow-md);
+}
+
+.modal-footer .btn:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .modal {
+        margin: var(--spacing-md);
+        padding: var(--spacing-lg);
+        max-width: 95%;
+        margin-top: var(--spacing-lg); /* تقليل المسافة العلوية على الموبايل */
+        margin-bottom: var(--spacing-lg); /* الحفاظ على مسافة من الأسفل على الموبايل */
+    }
+    .modal-header, .modal-footer {
+        padding: var(--spacing-md);
+    }
+    .heading {
+        font-size: var(--font-size-xl);
+    }
+    .textarea {
+        min-height: 150px;
+        font-size: var(--font-size-base);
+    }
+    .modal-footer { /* الأزرار عمودية على الموبايل */
+        flex-direction: column;
+        gap: var(--spacing-sm);
+    }
+    .modal-footer .btn {
+        width: 100%;
+        font-size: var(--font-size-base);
+        padding: var(--spacing-md);
+    }
+}

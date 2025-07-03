@@ -1,0 +1,95 @@
+{
+    "verifications": [
+        {
+            "id": "2bcaea43-95ca-41b9-84b5-264b9118757e",
+            "status": "جاري",
+            "created_at": "2025-07-03T22:03:25.647002",
+            "updated_at": "2025-07-03T22:04:42.386851",
+            "client_name": "نبأ عادل حسين ",
+            "email": "adlnba965@gmail.com",
+            "account_number": "",
+            "prize_amount": 0,
+            "agent_name": "رضا عادل محسن ",
+            "agency_type": "حصري",
+            "agency_id": "937169",
+            "name_verified": true,
+            "crm_account_valid": false,
+            "mt5_screenshot_received": false,
+            "agency_affiliation_verified": false,
+            "mt5_screenshot_notes": "",
+            "prize_type": "بونص ايداع",
+            "deposit_bonus_percentage": "40",
+            "competition_name": "غير محدد",
+            "prize_published_on_group": false,
+            "prize_due_date": "2025-06-29"
+        }
+    ],
+    "pending_issues": [
+        {
+            "id": "51fdbd78-5987-4542-8a02-a28ef271a846",
+            "client_name": "بيلاشرسبيلا",
+            "client_id": "بشلالسبقلابثلال",
+            "description": "لقشلالقنىلاتثلارتلاشثتر",
+            "status": "معلقة",
+            "created_at": "2025-07-03T23:16:53.033250",
+            "resolved_at": null,
+            "is_sent_to_group": true,
+            "sent_at": "2025-07-04T00:12:30.360047"
+        },
+        {
+            "id": "3a60dd65-3869-41a1-8a6a-0f4ebb67c907",
+            "client_name": "حساب تجربة",
+            "client_id": "بشلالسبقلابثلال",
+            "description": "لاراترعرنتت ا\nبتيلاار اتبيشر شبي\nرونبيشىرتشي",
+            "status": "معلقة",
+            "created_at": "2025-07-03T23:44:52.112589",
+            "resolved_at": null,
+            "is_sent_to_group": true,
+            "sent_at": "2025-07-04T00:12:30.360065"
+        },
+        {
+            "id": "c7c90788-e20c-41a6-94cb-67f9c8d5b5a3",
+            "client_name": "احمد جمال احمد",
+            "client_id": "ewcvve",
+            "description": "شششششششششششششششش",
+            "status": "تم الحل",
+            "is_sent_to_group": true,
+            "created_at": "2025-07-04T00:27:01.038374",
+            "resolved_at": "2025-07-04T00:27:41.752275",
+            "sent_at": "2025-07-04T00:27:07.226105"
+        },
+        {
+            "id": "ced46ca1-8538-4399-809f-5ff7f2513c7d",
+            "client_name": "عميلة من قبل الوكيل عبدالله اسماعيل يحيى",
+            "client_id": "@Corel94",
+            "description": "تم الاجتماع بها وتم رفع طلب تغير ايميل لها بحال تم التغير يرجى ابلاغها ",
+            "status": "معلقة",
+            "is_sent_to_group": true,
+            "created_at": "2025-07-04T00:32:27.306932",
+            "resolved_at": null,
+            "sent_at": "2025-07-04T00:35:20.763198"
+        },
+        {
+            "id": "24e10be7-245f-4b94-a937-184f35e30c99",
+            "client_name": "حساب تجربة",
+            "client_id": "ctycfj",
+            "description": "gyuguyiyviubjb",
+            "status": "معلقة",
+            "is_sent_to_group": true,
+            "created_at": "2025-07-04T01:22:01.077939",
+            "resolved_at": null,
+            "sent_at": "2025-07-04T01:22:14.497191"
+        },
+        {
+            "id": "23f01406-f03c-4cc8-ab00-c0f37e7e2d73",
+            "client_name": "احمد جمال احمد",
+            "client_id": "@Corel94",
+            "description": "اترترالااترنلاتن",
+            "status": "معلقة",
+            "is_sent_to_group": false,
+            "created_at": "2025-07-04T01:33:09.140046",
+            "resolved_at": null,
+            "sent_at": null
+        }
+    ]
+}

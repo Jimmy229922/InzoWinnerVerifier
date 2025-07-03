@@ -1,0 +1,142 @@
+/* استيراد خط Cairo من Google Fonts لدعم اللغة العربية بشكل جميل */
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+/* تعريف متغيرات CSS للألوان الرئيسية للتحكم السهل */
+:root {
+    --primary-color: #007bff; /* أزرق أساسي للأزرار الرئيسية والعناوين */
+    --primary-dark-color: #0056b3; /* درجة أغمق للأزرق عند الـ hover */
+    --secondary-color: #6c757d; /* لون ثانوي (رمادي) لأزرار العودة/الإغلاق */
+    --secondary-dark-color: #5a6268; /* درجة أغمق للرمادي */
+    --success-color: #28a745; /* أخضر للعمليات الناجحة/الأزرار الإيجابية */
+    --success-dark-color: #218838; /* درجة أغمق للأخضر */
+    --danger-color: #dc3545; /* أحمر لعمليات الحذف/التحذير */
+    --danger-dark-color: #c82333; /* درجة أغمق للأحمر */
+    --background-light: #f8f9fa; /* لون خلفية فاتح للموقع كله */
+    --background-card: #ffffff; /* لون خلفية الكروت/الأقسام البيضاء */
+    --border-color: #e0e0e0; /* لون حدود للعناصر */
+    --text-dark: #343a40; /* لون نص داكن */
+    --text-medium: #6c757d; /* لون نص متوسط */
+    --text-light: #fefefe; /* لون نص فاتح (للأزرار على خلفيات داكنة) */
+}
+
+/* إعادة ضبط أساسية للعناصر (CSS Reset بسيط) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* لضمان أن الـ padding والـ border لا يزيدان من حجم العنصر */
+}
+
+body {
+    margin: 0;
+    font-family: 'Cairo', sans-serif; /* استخدام خط Cairo كخط افتراضي */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    background-color: var(--background-light); /* خلفية فاتحة لكل الصفحة */
+    color: var(--text-dark); /* لون النص الأساسي */
+    direction: rtl; /* تحديد الاتجاه من اليمين لليسار للصفحة كلها */
+    text-align: right; /* محاذاة النص لليمين للصفحة كلها */
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+}
+
+/* تنسيقات عامة للأزرار */
+button {
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    white-space: nowrap; /* منع انقسام النص في الزر */
+    /* إضافة لون افتراضي للأزرار العامة لتجنب الشفافية أو الألوان الغريبة */
+    background-color: var(--primary-color); 
+    color: var(--text-light);
+}
+
+button:hover {
+    transform: translateY(-1px); /* تأثير بسيط عند المرور بالماوس */
+    /* يمكن إضافة درجة أغمق للـ hover هنا لو لم يتم تحديدها في الكود الخاص بالمكون */
+    /* background-color: var(--primary-dark-color); */
+}
+
+/* تنسيقات عامة للحقول النصية والمناطق النصية */
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 16px;
+    font-family: 'Cairo', sans-serif;
+    color: var(--text-dark);
+    background-color: var(--background-card);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+input:focus,
+textarea:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25); /* ظل بسيط عند التركيز */
+    outline: none; /* إزالة الخط الأزرق الافتراضي */
+}
+
+/* تنسيقات الـ checkbox */
+input[type="checkbox"] {
+    /* تم تعديل margin-left لـ margin-right لتناسب الـ RTL بشكل أفضل */
+    margin-right: 8px; /* مسافة على اليمين في RTL */
+    margin-left: 0; /* تأكد من إزالة أي margin-left افتراضي */
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+    vertical-align: middle;
+}
+
+/* تنسيقات label العامة - مهم جداً */
+label {
+    display: inline-block; /* لضمان أن الـ label ياخد مساحة بقدر محتواه */
+    vertical-align: middle; /* لمحاذاة النص مع حقل الإدخال أو الـ checkbox */
+    margin-bottom: 5px; /* مسافة تحت الـ label */
+    color: var(--text-dark);
+}
+
+/* تنسيق للروابط */
+a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: var(--primary-dark-color);
+    text-decoration: underline;
+}
+
+/* تنسيقات الأيقونات (تستخدم بعد تثبيت Font Awesome) */
+.icon {
+    /* تم تعديل margin-left لـ margin-right لتناسب الـ RTL بشكل أفضل */
+    margin-right: 8px; /* مسافة على اليمين في RTL للنصوص بعد الأيقونة */
+    margin-left: 0; /* تأكد من إزالة أي margin-left افتراضي */
+    vertical-align: middle; /* محاذاة الأيقونة عمودياً */
+}
+
+/* تنسيق خاص للأزرار داخل المكونات لو استخدمت Hover */
+/* هذا سيتم تطبيقه فقط على الأزرار التي ليس لها background-color مخصص */
+button:hover:not([style*="background-color"]) {
+    background-color: var(--primary-dark-color); /* لون hover افتراضي */
+}
+
+/* override لتنسيق الـ input داخل inputWithSymbol لضمان ملء المساحة المتاحة */
+.inputWithSymbol input {
+    width: calc(100% - 40px); /* Adjust based on currencySymbol padding/width */
+    border: none; /* إزالة الحدود الداخلية عشان متتعارضش مع الـ div الأب */
+    border-radius: 0; /* إزالة الـ border-radius الداخلي */
+}
+.inputWithSymbol input:focus {
+    box-shadow: none; /* إزالة الـ box-shadow عند التركيز عشان متتعارضش مع الـ div الأب */
+}

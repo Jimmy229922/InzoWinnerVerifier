@@ -1,0 +1,347 @@
+/* frontend/src/components/FilterModal.css */
+
+.filter-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75); /* خلفية شفافة أغمق بكثير لإبراز المودال */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    font-family: var(--font-family-cairo);
+    direction: rtl;
+}
+
+.filter-modal {
+    background-color: var(--background-card);
+    border-radius: 20px;
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.7);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: fadeInScale 0.4s ease-out forwards;
+    border: 2px solid var(--primary-color);
+}
+
+@keyframes fadeInScale {
+    from {
+        opacity: 0;
+        transform: scale(0.8) translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between; /* تبديل justify-content */
+    align-items: center;
+    padding: 25px 35px;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 1.6em;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+}
+
+.modal-close-button {
+    background: none;
+    border: none;
+    font-size: 1.8em;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: transform 0.3s ease, color 0.3s ease;
+}
+.modal-close-button:hover {
+    transform: rotate(90deg) scale(1.1);
+    color: #ffffff;
+}
+
+/* --- تم إزالة تنسيقات زر تبديل الثيم --- */
+/* .theme-toggle-button { ... } */
+
+
+.modal-body {
+    padding: 35px;
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+.modal-search-group {
+    position: relative;
+    width: 100%;
+    margin-bottom: 15px;
+}
+
+.modal-search-input {
+    width: 100%;
+    padding: 15px 20px;
+    padding-right: 50px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    font-size: 1.15em;
+    color: var(--text-dark);
+    background-color: var(--background-light);
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-search-input:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 5px rgba(0, 123, 255, 0.3);
+}
+
+.modal-search-group .search-icon {
+    position: absolute;
+    right: 20px; /* NEW: ضبط مكان الأيقونة */
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-medium);
+    font-size: 1.4em;
+    pointer-events: none;
+}
+
+.modal-search-group .clear-search-button {
+    background: none;
+    border: none;
+    color: var(--danger-color);
+    font-size: 1.3em;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1;
+}
+.modal-search-group .clear-search-button:hover {
+    background-color: rgba(var(--danger-rgb), 0.2);
+}
+
+.modal-filter-section {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* تم تقليل المسافة قليلاً */
+    padding-bottom: 25px;
+    border-bottom: 1px dashed var(--border-color); /* تم تقليل سمك الخط قليلاً */
+}
+.modal-filter-section:last-of-type {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.filter-section-title {
+    color: var(--text-dark);
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 8px; /* تم تقليل المسافة قليلاً */
+    border-bottom: 1px solid rgba(0,0,0,0.05); /* إضافة خط خفيف تحت العنوان */
+    padding-bottom: 8px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.checkbox-label-modal {
+    display: flex;
+    align-items: center;
+    font-size: 1.1em;
+    color: var(--text-dark);
+    cursor: pointer;
+}
+
+.modal-checkbox {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border: 2px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--background-card);
+    margin-left: 12px;
+    position: relative;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s, transform 0.2s;
+}
+
+.modal-checkbox:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    transform: scale(1.05);
+}
+
+.modal-checkbox:checked::after {
+    content: '\2713';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: var(--text-light);
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.modal-checkbox:hover {
+    border-color: var(--primary-color);
+}
+
+.modal-select {
+    width: 100%;
+    padding: 12px 18px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1.1em; /* تم زيادة حجم الخط قليلاً */
+    background-color: var(--background-card);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2214%22%20height%3D%2214%22%20viewBox%3D%220%200%2016%2016%22%3E%3Cpath%20fill%3D%22%23343a40%22%20d%3D%22M8%2011.5L3.5%207h9L8%2011.5z%22%2F%3E%3C%2Fsvg%3E'); /* أيقونة سهم أكبر وأغمق */
+    background-repeat: no-repeat;
+    background-position: left 15px center;
+}
+
+.modal-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+    outline: none;
+}
+
+.modal-input-with-icon {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: var(--background-card);
+}
+
+.modal-input-with-icon .modal-input {
+    flex-grow: 1;
+    border: none;
+    border-radius: 0;
+    padding: 14px 18px; /* مسافة داخلية أكبر */
+    padding-right: 50px; /* مسافة لأيقونة التقويم */
+    font-size: 1.1em;
+    color: var(--text-dark);
+    background-color: var(--background-card);
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.modal-input-with-icon .modal-input:focus {
+    box-shadow: none;
+}
+
+.modal-input-with-icon .input-icon {
+    position: absolute;
+    left: 18px; /* مسافة أكبر */
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-medium);
+    font-size: 1.3em; /* حجم أيقونة أكبر */
+    pointer-events: none;
+}
+
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 25px 35px; /* مسافة داخلية أكبر */
+    border-top: 1px solid var(--border-color);
+    background-color: var(--background-light);
+}
+
+.apply-filters-modal-button,
+.reset-filters-modal-button {
+    padding: 14px 30px; /* حجم أكبر للأزرار */
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.2em; /* حجم خط أكبر */
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+.apply-filters-modal-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+.apply-filters-modal-button:hover {
+    background-color: var(--primary-dark-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+.reset-filters-modal-button {
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+}
+.reset-filters-modal-button:hover {
+    background-color: var(--secondary-dark-color);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 600px) {
+    .filter-modal {
+        margin: 15px;
+        padding: 25px;
+        max-width: 95%;
+    }
+    .modal-header, .modal-footer {
+        padding: 15px 25px;
+    }
+    .modal-title {
+        font-size: 1.5em;
+    }
+    .modal-body {
+        padding: 25px;
+        gap: 20px;
+    }
+    .apply-filters-modal-button,
+    .reset-filters-modal-button {
+        width: 100%;
+        font-size: 1.1em;
+        padding: 12px 20px;
+    }
+    .modal-footer {
+        flex-direction: column;
+    }
+}
