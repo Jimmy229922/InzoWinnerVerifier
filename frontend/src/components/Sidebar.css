@@ -1,50 +1,286 @@
-/* frontend/src/components/Sidebar.css */
+/* ========================================================================== */
+/* -------------------- Sidebar Variables (يمكن إضافتها لـ :root) -------------------- */
+/* ========================================================================== */
+/*
+   هذه المتغيرات يجب أن تُعرّف في ملف CSS عام مثل App.css أو Index.css
+   وتحت الـ :root selector، وأيضًا تحت body.dark لمتغيرات الوضع الداكن.
+   مثال:
+   :root {
+       --primary-color: #007bff;
+       --text-dark: #333333;
+       --background-card: #ffffff;
+       --border-color: #e0e0e0;
+       --shadow-sm: 0 2px 4px rgba(0,0,0,0.1);
+       --font-size-3xl: 1.875rem;
+       --font-weight-bold: 700;
+       --spacing-md: 15px;
+       --spacing-lg: 20px;
+       --spacing-xl: 30px;
+       --transition-medium: 0.3s;
+       --transition-fast: 0.15s;
+       --radius-md: 8px;
+       --radius-full: 50%;
+       --sidebar-width: 250px;
+       --sidebar-collapsed-width: 80px;
+       --z-sticky: 100;
+       --z-fixed: 1000;
+       --nav-item-color: #666666;
+       --nav-item-hover-bg: #f0f0f0;
+       --nav-item-hover-color: #0056b3;
+       --nav-item-active-border: #007bff;
+       --text-light: #ffffff;
+       --gradient-primary: linear-gradient(90deg, #007bff 0%, #0056b3 100%);
+       --accent-color: #ff9800;
+       --accent-light: #ffe0b2;
+       --accent-dark: #e65100;
+       --background-hover: #f0f0f0;
+       --background-selected: #e0e0e0;
+   }
+
+   body.dark {
+       --primary-color: #66b3ff;
+       --text-dark: #e0e0e0;
+       --background-card: #2d2d2d;
+       --border-color: #444444;
+       --shadow-sm: 0 2px 4px rgba(0,0,0,0.3);
+       --nav-item-color: #b0b0b0;
+       --nav-item-hover-bg: #3a3a3a;
+       --nav-item-hover-color: #66b3ff;
+       --nav-item-active-border: #66b3ff;
+       --gradient-primary: linear-gradient(90deg, #66b3ff 0%, #007bff 100%);
+       --accent-color: #ffd700;
+       --accent-light: #fffacd;
+       --accent-dark: #b8860b;
+       --background-hover: #3a3a3a;
+       --background-selected: #4a4a4a;
+   }
+*/
+
+/* ========================================================================== */
+/* -------------------- Sidebar Base Styles -------------------- */
+/* ========================================================================== */
 
 .sidebar {
-    width: 250px; /* عرض ثابت للشريط الجانبي */
-    background-color: var(--background-card); /* خلفية الشريط الجانبي */
-    box-shadow: var(--shadow-2xl); /* ظل أعمق وأكثر وضوحاً */
-    padding: var(--spacing-xl) var(--spacing-md); /* مسافات داخلية أكبر */
+    width: var(--sidebar-width, 250px);
+    min-width: var(--sidebar-width, 250px);
+    background: var(--background-card);
+    border-left: 1px solid var(--border-color); /* For RTL */
+    box-shadow: var(--shadow-md); /* ظل خفيف للشريط الجانبي */
     display: flex;
     flex-direction: column;
-    border-left: 1px solid var(--border-color); /* حدود على اليسار (لأن الاتجاه RTL) */
-    flex-shrink: 0; /* منع الشريط من الانكماش */
-    position: sticky; /* لجعل الشريط ثابتاً عند التمرير */
+    height: 100vh;
+    position: sticky;
     top: 0;
-    height: 100vh; /* ارتفاع كامل الشاشة */
-    overflow-y: auto; /* السماح بالتمرير إذا زاد المحتوى */
-    z-index: var(--z-sticky); /* لضمان ظهوره فوق المحتوى الآخر */
-    direction: rtl; /* اتجاه النص من اليمين لليسار */
-    text-align: right; /* محاذاة النص لليمين */
-    transition: background-color var(--transition-medium), box-shadow var(--transition-medium); /* انتقال سلس للألوان والظلال */
+    right: 0; /* Aligns to right in RTL */
+    z-index: var(--z-sticky, 100);
+    transition: width var(--transition-medium, 0.3s) ease-in-out,
+                min-width var(--transition-medium, 0.3s) ease-in-out,
+                background-color var(--transition-medium, 0.3s);
+    padding-bottom: var(--spacing-lg, 20px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* ========================================================================== */
+/* -------------------- Sidebar Collapsed State -------------------- */
+/* ========================================================================== */
+
+.sidebar.collapsed {
+    width: var(--sidebar-collapsed-width, 80px);
+    min-width: var(--sidebar-collapsed-width, 80px);
+}
+
+/* ========================================================================== */
+/* -------------------- Sidebar Toggle Button -------------------- */
+/* ========================================================================== */
+
+.sidebar-toggle-button {
+    position: absolute;
+    top: var(--spacing-lg, 20px);
+    left: var(--spacing-md, 15px); /* Positioned left for RTL */
+    background: var(--primary-color);
+    color: var(--text-light);
+    border: none;
+    border-radius: var(--radius-full, 50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-lg, 1.125rem);
+    cursor: pointer;
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-medium, 0.3s);
+    z-index: var(--z-fixed, 1000);
+}
+
+.sidebar-toggle-button:hover {
+    background: var(--primary-dark);
+    transform: scale(1.1);
+}
+
+.sidebar-toggle-button:active {
+    transform: scale(0.95);
+}
+
+/* ========================================================================== */
+/* -------------------- Sidebar Header (Logo & Title) -------------------- */
+/* ========================================================================== */
 
 .sidebar-header {
     display: flex;
-    flex-direction: column;
     align-items: center;
-    padding-bottom: var(--spacing-xl); /* مسافة أكبر */
-    margin-bottom: var(--spacing-xl); /* مسافة أكبر */
-    border-bottom: 2px solid var(--border-color-dark); /* خط فاصل أكثر وضوحاً */
+    /* التعديل الرئيسي: النص على اليمين والشعار على اليسار في RTL */
+    justify-content: flex-start; /* Start aligns to right in RTL */
+    padding: var(--spacing-xl, 30px) var(--spacing-md, 15px);
+    border-bottom: 1px solid var(--border-color);
+    margin-bottom: var(--spacing-lg, 20px);
+    flex-shrink: 0;
+    gap: var(--spacing-md, 15px); /* Space between logo and title */
+}
+
+.sidebar.collapsed .sidebar-header {
+    justify-content: center; /* Center logo when collapsed */
+    padding: var(--spacing-lg, 20px) var(--spacing-xs, 5px);
 }
 
 .sidebar-logo {
-    width: 90px; /* حجم أكبر للشعار */
-    height: 90px;
-    border-radius: var(--radius-full); /* شكل دائري */
-    object-fit: cover;
-    margin-bottom: var(--spacing-md); /* مسافة جيدة تحت الشعار */
-    box-shadow: var(--shadow-lg); /* ظل أكثر بروزاً للشعار */
-    border: 3px solid var(--primary-color); /* حدود ملونة للشعار */
+    width: 50px;
+    height: 50px;
+    border-radius: var(--radius-md, 8px);
+    /* التعديل الرئيسي: الشعار على يسار النص في RTL */
+    margin-right: 0; /* Reset default margin */
+    margin-left: var(--spacing-md, 15px); /* Space after logo in RTL */
+    transition: all var(--transition-medium, 0.3s);
+    border: 2px solid var(--primary-color);
+    object-fit: contain;
+    flex-shrink: 0; /* Prevent logo from shrinking */
+}
+
+.sidebar.collapsed .sidebar-logo {
+    margin: 0;
+    width: 40px;
+    height: 40px;
 }
 
 .sidebar-title {
-    font-size: var(--font-size-2xl); /* حجم أكبر للعنوان */
-    font-weight: var(--font-weight-extrabold); /* وزن خط أثقل */
+    /* التعديل الرئيسي: حجم خط أكبر ووزن خط عريض للوضوح */
+    font-size: var(--font-size-3xl, 1.875rem); /* Increased font size */
+    font-weight: var(--font-weight-bold, 700); /* Bold font weight */
+    color: var(--text-dark);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* التعديل الرئيسي: إظهار النص في الوضع الموسع */
+    opacity: 1;
+    width: auto;
+    visibility: visible;
+    transition: opacity var(--transition-medium, 0.3s) var(--transition-fast, 0.15s);
+    line-height: 1.2; /* Better line spacing */
+}
+
+.sidebar.collapsed .sidebar-title {
+    opacity: 0;
+    width: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast, 0.15s); /* Fast fade out */
+}
+
+/* ========================================================================== */
+/* -------------------- User Profile Section -------------------- */
+/* ========================================================================== */
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    flex-direction: row-reverse; /* Aligns content to right in RTL */
+    gap: var(--spacing-md, 15px);
+    padding: var(--spacing-md, 15px) var(--spacing-lg, 20px);
+    margin: 0 var(--spacing-md, 15px) var(--spacing-lg, 20px);
+    background: var(--background-card);
+    border-radius: var(--radius-lg, 12px);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-medium, 0.3s);
+    flex-shrink: 0;
+}
+
+.sidebar.collapsed .user-profile {
+    justify-content: center;
+    padding: var(--spacing-md, 15px) var(--spacing-xs, 5px);
+    margin: 0 var(--spacing-xs, 5px) var(--spacing-lg, 20px);
+}
+
+.user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full, 50%);
+    background: var(--primary-light);
     color: var(--primary-color);
-    text-align: center;
-    line-height: 1.3;
-    text-shadow: 1px 1px 3px rgba(0,0,0,0.1); /* ظل نص خفيف */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--font-size-2xl, 1.5rem);
+    flex-shrink: 0;
+    border: 2px solid var(--primary-color);
+}
+
+.sidebar.collapsed .user-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: var(--font-size-xl, 1.25rem);
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    text-align: right; /* Aligns text to right in RTL */
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 1; /* Ensure visible in expanded state */
+    width: auto;
+    visibility: visible;
+    transition: opacity var(--transition-medium, 0.3s) var(--transition-fast, 0.15s);
+}
+
+.sidebar.collapsed .user-info {
+    opacity: 0;
+    width: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast, 0.15s);
+}
+
+.user-name {
+    font-weight: var(--font-weight-semibold, 600);
+    color: var(--text-dark);
+    font-size: var(--font-size-base, 1rem);
+}
+
+.user-role {
+    font-size: var(--font-size-sm, 0.875rem);
+    color: var(--text-muted);
+}
+
+/* ========================================================================== */
+/* -------------------- Navigation Links -------------------- */
+/* ========================================================================== */
+
+.sidebar-nav {
+    flex-grow: 1;
+    padding: 0 var(--spacing-md, 15px);
+    margin-bottom: var(--spacing-lg, 20px);
+    overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.sidebar-nav::-webkit-scrollbar {
+    display: none;
 }
 
 .sidebar-nav ul {
@@ -54,221 +290,340 @@
 }
 
 .sidebar-nav li {
-    margin-bottom: var(--spacing-md); /* مسافة أكبر بين عناصر القائمة */
+    margin-bottom: var(--spacing-sm, 10px);
 }
 
-/* الأنماط الجديدة لـ .nav-button (الذي حل محل <a>) */
 .nav-button {
     display: flex;
     align-items: center;
-    width: 100%; /* لجعل الزر يملأ العرض الكامل للعنصر <li> */
-    gap: var(--spacing-md);
-    padding: var(--spacing-md) var(--spacing-lg); /* بادينغ أكبر للأزرار */
-    border-radius: var(--radius-lg); /* حواف دائرية أكثر */
-    color: var(--text-medium); /* لون نص متوسط لغير النشط */
-    text-decoration: none; /* إزالة خط التسطير إذا كان موجوداً */
-    font-size: var(--font-size-lg); /* حجم خط أكبر للروابط */
-    font-weight: var(--font-weight-medium);
-    transition: all var(--transition-medium); /* انتقال سلس لكل الخصائص */
-    position: relative; /* لتأثيرات التحويم */
-    overflow: hidden; /* لإخفاء تأثير اللمعان */
-    background: transparent; /* خلفية شفافة افتراضياً */
-    border: none; /* إزالة حدود الزر الافتراضية */
-    cursor: pointer; /* مؤشر اليد */
-    text-align: right; /* محاذاة النص لليمين */
+    flex-direction: row-reverse; /* Icon on left, text on right in RTL */
+    width: 100%;
+    gap: var(--spacing-md, 15px);
+    padding: var(--spacing-md, 15px) var(--spacing-lg, 20px);
+    border-radius: var(--radius-lg, 12px);
+    color: var(--nav-item-color);
+    text-decoration: none;
+    font-size: var(--font-size-lg, 1.125rem);
+    font-weight: var(--font-weight-medium, 500);
+    transition: all var(--transition-medium, 0.3s);
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    text-align: right; /* Align text to right for RTL */
 }
 
 .nav-button::before {
     content: '';
     position: absolute;
     top: 0;
-    right: -100%; /* يبدأ من خارج العنصر على اليسار (RTL) */
+    right: -100%; /* Starts outside to the left for RTL sparkle effect */
     width: 100%;
     height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent); /* تأثير لمعان */
-    transition: all var(--transition-medium);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transition: all var(--transition-medium, 0.3s);
     z-index: 1;
 }
 
 .nav-button:hover::before {
-    right: 100%; /* ينتهي خارج العنصر على اليمين (RTL) */
+    right: 100%; /* Ends outside to the right for RTL sparkle effect */
 }
 
 .nav-button span,
 .nav-button .nav-icon {
     position: relative;
-    z-index: 2; /* لضمان ظهور النص والأيقونة فوق تأثير اللمعان */
+    z-index: 2;
 }
 
 .nav-button:hover {
-    background-color: var(--background-hover);
-    color: var(--primary-dark); /* لون أغمق عند التحويم */
-    transform: translateX(-8px); /* تأثير انزلاق أكبر لليسار (لأن الاتجاه RTL) */
-    box-shadow: var(--shadow-sm); /* ظل خفيف عند التحويم */
+    background-color: var(--nav-item-hover-bg);
+    color: var(--nav-item-hover-color);
+    transform: translateX(-8px); /* Slide left for RTL */
+    box-shadow: var(--shadow-sm);
+}
+
+.nav-button.theme-toggle-button:hover {
+    transform: none; /* Override slide for theme button */
 }
 
 .sidebar-nav li.active .nav-button {
-    background: var(--gradient-primary); /* تدرج لوني للخلفية النشطة */
-    color: var(--text-light); /* نص فاتح جداً للعنصر النشط */
-    font-weight: var(--font-weight-bold);
-    box-shadow: var(--shadow-md); /* ظل أكثر بروزاً للعنصر النشط */
-    transform: translateX(-4px); /* انزلاق خفيف لليسار للعنصر النشط */
+    background: var(--gradient-primary);
+    color: var(--text-light);
+    font-weight: var(--font-weight-bold, 700);
+    box-shadow: var(--shadow-sm);
+    border-right: 4px solid var(--nav-item-active-border); /* Active bar on right for RTL */
+    padding-right: calc(var(--spacing-lg, 20px) - 4px);
+    transform: translateX(-4px); /* Slight slide left for active item */
 }
 
-.sidebar-nav li.active .nav-button .nav-icon {
-    color: var(--text-light); /* لون الأيقونة النشطة */
-}
-
-.sidebar-nav li.active .nav-button:hover {
-    background: var(--gradient-primary); /* يبقى التدرج عند التحويم */
-    transform: translateX(-6px); /* انزلاق أكبر قليلاً عند التحويم على النشط */
-    box-shadow: var(--shadow-lg); /* ظل أكبر عند التحويم على النشط */
+.sidebar.collapsed .sidebar-nav li.active .nav-button {
+    border-right: none;
+    border-bottom: 4px solid var(--nav-item-active-border);
+    padding-right: var(--spacing-xs, 5px);
+    padding-bottom: calc(var(--spacing-md, 15px) - 4px);
+    transform: none;
 }
 
 .nav-icon {
-    font-size: var(--font-size-xl); /* حجم أكبر للأيقونات */
-    color: var(--text-muted); /* لون الأيقونات غير النشطة */
-    transition: color var(--transition-fast);
+    font-size: var(--font-size-xl, 1.25rem);
+    color: var(--text-muted);
+    transition: color var(--transition-fast, 0.15s);
 }
 
-/* Theme Toggle Button */
-.theme-toggle-container {
-    margin-top: auto; /* يدفع الزر إلى الأسفل */
-    padding-top: var(--spacing-lg);
+.sidebar.collapsed .nav-button span {
+    opacity: 0;
+    width: 0;
+    visibility: hidden;
+    transition: opacity var(--transition-fast, 0.15s);
+}
+
+/* ========================================================================== */
+/* -------------------- Sidebar Footer -------------------- */
+/* ========================================================================== */
+
+.sidebar-footer {
+    padding: var(--spacing-lg, 20px) var(--spacing-md, 15px);
     border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    flex-shrink: 0;
+}
+
+.sidebar-footer ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-footer li {
+    margin-bottom: var(--spacing-sm, 10px);
+}
+
+.sidebar-footer li:last-child {
+    margin-bottom: 0;
+}
+
+/* ========================================================================== */
+/* -------------------- Theme Toggle Button -------------------- */
+/* ========================================================================== */
+
+.theme-toggle-item {
+    margin-top: var(--spacing-lg, 20px);
     text-align: center;
 }
 
 .theme-toggle-button {
-    background: var(--background-card); /* خلفية زر تبديل الثيم */
-    border: 1px solid var(--border-color-dark); /* حدود واضحة */
-    border-radius: var(--radius-full); /* شكل دائري */
-    font-size: var(--font-size-2xl);
+    background: var(--background-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-full, 50%);
+    font-size: var(--font-size-2xl, 1.5rem);
     cursor: pointer;
-    color: var(--accent-color); /* لون مميز لزر التبديل */
-    padding: var(--spacing-sm) var(--spacing-md);
-    transition: all var(--transition-medium);
+    color: var(--accent-color);
+    padding: var(--spacing-sm, 10px) var(--spacing-md, 15px);
+    transition: all var(--transition-medium, 0.3s);
     box-shadow: var(--shadow-sm);
     outline: none;
+    width: auto;
+    justify-content: center;
+}
+
+.sidebar.collapsed .theme-toggle-button {
+    padding: var(--spacing-md, 15px) var(--spacing-xs, 5px);
+    width: 100%;
 }
 
 .theme-toggle-button:hover {
-    background-color: var(--accent-light); /* خلفية خفيفة عند التحويم */
+    background-color: var(--accent-light);
     color: var(--accent-dark);
-    transform: scale(1.1) rotate(15deg); /* تأثير دوران وتكبير */
+    transform: scale(1.1) rotate(15deg);
     box-shadow: var(--shadow-md);
 }
 
 /* ========================================================================== */
-/* Responsive adjustments for Sidebar */
+/* -------------------- Responsive Adjustments -------------------- */
 /* ========================================================================== */
+
 @media (max-width: 1024px) {
     .sidebar {
-        width: 80px; /* تصغير الشريط الجانبي على الشاشات المتوسطة */
-        padding: var(--spacing-lg) var(--spacing-xs);
+        width: var(--sidebar-collapsed-width, 80px);
+        min-width: var(--sidebar-collapsed-width, 80px);
+        padding: var(--spacing-lg, 20px) var(--spacing-xs, 5px);
     }
     .sidebar-header {
-        padding-bottom: var(--spacing-lg);
-        margin-bottom: var(--spacing-lg);
+        padding-bottom: var(--spacing-lg, 20px);
+        margin-bottom: var(--spacing-lg, 20px);
+        justify-content: center; /* Center logo/title when collapsed */
     }
     .sidebar-logo {
         width: 60px;
         height: 60px;
+        margin-left: 0; /* No margin when collapsed */
+        margin-right: 0;
     }
     .sidebar-title {
-        display: none; /* إخفاء العنوان النصي */
+        opacity: 0;
+        width: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-fast, 0.15s);
     }
-    .sidebar-nav .nav-button span { /* إخفاء نص الأزرار */
-        display: none; 
+    .user-profile {
+        justify-content: center;
+        padding: var(--spacing-md, 15px) var(--spacing-xs, 5px);
+        margin: 0 var(--spacing-xs, 5px) var(--spacing-lg, 20px);
+    }
+    .user-info {
+        opacity: 0;
+        width: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-fast, 0.15s);
+    }
+    .sidebar-nav .nav-button span {
+        opacity: 0;
+        width: 0;
+        visibility: hidden;
+        transition: opacity var(--transition-fast, 0.15s);
     }
     .sidebar-nav .nav-button {
-        justify-content: center; /* توسيط الأيقونات */
-        padding: var(--spacing-md) var(--spacing-xs);
+        justify-content: center; /* Center icons when collapsed */
+        padding: var(--spacing-md, 15px) var(--spacing-xs, 5px);
+        gap: 0;
     }
     .sidebar-nav li.active .nav-button {
-        transform: none; /* إزالة الانزلاق الأفقي */
+        transform: none;
+        border-right: none;
+        border-bottom: 4px solid var(--nav-item-active-border);
+        padding-right: var(--spacing-xs, 5px);
+        padding-bottom: calc(var(--spacing-md, 15px) - 4px);
     }
     .sidebar-nav .nav-button:hover {
-        transform: none; /* إزالة الانزلاق الأفقي */
+        transform: none;
     }
     .nav-icon {
-        font-size: var(--font-size-xl); /* الحفاظ على حجم الأيقونات */
+        font-size: var(--font-size-xl, 1.25rem);
     }
     .theme-toggle-button {
-        font-size: var(--font-size-xl);
-        padding: var(--spacing-xs);
-        transform: none; /* إزالة الدوران */
+        font-size: var(--font-size-xl, 1.25rem);
+        padding: var(--spacing-xs, 5px);
+        transform: none;
     }
     .theme-toggle-button:hover {
-        transform: scale(1.1); /* تكبير فقط */
+        transform: scale(1.1);
     }
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        width: 100%; /* الشريط الجانبي يأخذ العرض الكامل على الشاشات الصغيرة جداً */
-        height: auto; /* ارتفاع تلقائي */
-        position: relative; /* ليس ثابتاً */
-        border-bottom: 1px solid var(--border-color); /* حدود سفلية */
-        border-left: none; /* إزالة الحدود الجانبية */
-        padding: var(--spacing-md);
-        flex-direction: row; /* العناصر أفقياً */
-        justify-content: space-around; /* توزيع العناصر بالتساوي */
-        flex-wrap: wrap; /* السماح بالعناصر بالانتقال لسطر جديد */
-        gap: var(--spacing-sm);
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 100%;
+        height: auto;
+        border-top: 1px solid var(--border-color);
+        border-left: none;
+        padding: var(--spacing-md, 15px);
+        flex-direction: row;
+        justify-content: space-around;
+        flex-wrap: nowrap;
+        gap: var(--spacing-sm, 10px);
+        box-shadow: var(--shadow-md);
+        z-index: var(--z-fixed, 1000);
     }
 
-    .sidebar-header {
-        display: none; /* إخفاء الهيدر على الشاشات الصغيرة */
+    .sidebar-toggle-button {
+        display: none;
+    }
+
+    .sidebar-header,
+    .user-profile {
+        display: none; /* Hide header and user profile on mobile */
+    }
+
+    .sidebar-nav {
+        flex-grow: 1;
+        padding: 0;
+        margin-bottom: 0;
+        overflow-y: visible;
     }
 
     .sidebar-nav ul {
         display: flex;
-        flex-wrap: wrap;
-        justify-content: center;
+        flex-wrap: nowrap;
+        justify-content: space-around;
         width: 100%;
-        gap: var(--spacing-sm);
+        gap: var(--spacing-sm, 10px);
     }
 
     .sidebar-nav li {
         margin-bottom: 0;
-        flex-grow: 1; /* جعل العناصر تتمدد لملء المساحة */
+        flex-grow: 1;
         text-align: center;
+        flex-basis: 0;
     }
 
-    .sidebar-nav .nav-button { /* تطبيق تنسيقات الزر على الشاشات الصغيرة */
-        flex-direction: column; /* الأيقونة والنص فوق بعضهما */
-        padding: var(--spacing-xs);
-        font-size: var(--font-size-sm);
-        gap: var(--spacing-xs);
+    .sidebar-nav .nav-button {
+        flex-direction: column; /* Icon and text stacked */
+        padding: var(--spacing-xs, 5px);
+        font-size: var(--font-size-sm, 0.875rem);
+        gap: var(--spacing-xs, 5px);
+        border-right: none;
+        border-bottom: none;
+        justify-content: center;
     }
 
     .sidebar-nav .nav-button:hover {
-        transform: none; /* إزالة تأثير الانزلاق على الموبايل */
+        transform: none;
     }
     
-    .theme-toggle-container {
-        margin-top: var(--spacing-md); /* مسافة من الأعلى */
-        width: 100%;
-        text-align: center;
-        border-top: none; /* إزالة الخط الفاصل */
+    .sidebar-nav li.active .nav-button {
+        background: var(--background-hover);
+        color: var(--primary-color);
+        box-shadow: none;
+        transform: none;
+        border-radius: var(--radius-md, 8px);
+    }
+    body.dark .sidebar-nav li.active .nav-button {
+        background: var(--background-selected);
+    }
+
+    .sidebar-footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 0;
         padding-top: 0;
+        border-top: none;
+        width: auto;
+        flex-shrink: 0;
+    }
+    .sidebar-footer ul {
+        display: flex;
+        gap: var(--spacing-sm, 10px);
+        width: auto;
+    }
+    .sidebar-footer li {
+        margin-bottom: 0;
+    }
+    .theme-toggle-item {
+        margin-top: 0;
+        margin-right: var(--spacing-md, 15px);
     }
     .theme-toggle-button {
-        font-size: var(--font-size-xl);
-        padding: var(--spacing-xs) var(--spacing-sm);
+        font-size: var(--font-size-xl, 1.25rem);
+        padding: var(--spacing-xs, 5px) var(--spacing-sm, 10px);
+        flex-direction: column;
+        gap: var(--spacing-xs, 5px);
     }
 }
 
 @media (max-width: 480px) {
     .sidebar-nav .nav-button {
-        font-size: var(--font-size-xs);
-        padding: var(--spacing-xs);
+        font-size: var(--font-size-xs, 0.75rem);
+        padding: var(--spacing-xs, 5px);
     }
     .nav-icon {
-        font-size: var(--font-size-base);
+        font-size: var(--font-size-base, 1rem);
     }
     .theme-toggle-button {
-        font-size: var(--font-size-lg);
+        font-size: var(--font-size-lg, 1.125rem);
     }
 }

@@ -1,0 +1,390 @@
+/* SettingsPage.css */
+
+/* تنسيقات عامة للصفحة SettingsPage */
+.settings-page {
+    padding: 20px;
+    background-color: var(--background-color-primary); /* متغيرات CSS */
+    color: var(--text-color-primary);
+    border-radius: 8px;
+    box-shadow: var(--shadow-small);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    min-height: calc(100vh - 40px); /* للتأكد من أن الصفحة تملأ الارتفاع */
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* مسافة بين الأقسام */
+}
+
+/* التنسيقات للوضع الداكن (إذا تم تطبيقها على body أو عنصر أعلى) */
+body.dark .settings-page {
+    background-color: var(--dark-background-color-primary);
+    color: var(--dark-text-color-primary);
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+.section-title-icon {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+}
+
+.form-section {
+    background-color: var(--card-background);
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-medium);
+    margin-bottom: 20px;
+}
+
+body.dark .form-section {
+    background-color: var(--dark-card-background);
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+}
+
+body.dark .label {
+    color: var(--dark-text-color-secondary);
+}
+
+.input, .select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 5px;
+    font-size: 1rem;
+    background-color: var(--input-background);
+    color: var(--text-color-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.dark .input, body.dark .select {
+    background-color: var(--dark-input-background);
+    border-color: var(--dark-border-color);
+    color: var(--dark-text-color-primary);
+}
+
+.input:focus, .select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+}
+
+.input::placeholder {
+    color: var(--text-color-placeholder);
+}
+
+body.dark .input::placeholder {
+    color: var(--dark-text-color-placeholder);
+}
+
+
+/* Checkbox styling */
+.checkbox {
+    margin-right: 10px;
+    transform: scale(1.2); /* لجعل مربع الاختيار أكبر قليلاً */
+}
+
+.checkbox-label {
+    font-weight: normal;
+    color: var(--text-color-primary);
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+body.dark .checkbox-label {
+    color: var(--dark-text-color-primary);
+}
+
+/* Hint text for inputs */
+.hint-text {
+    font-size: 0.85rem;
+    color: var(--text-color-secondary);
+    margin-top: 5px;
+}
+
+body.dark .hint-text {
+    color: var(--dark-text-color-secondary);
+}
+
+/* Quick Actions Grid */
+.quick-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.quick-actions-grid .btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 15px;
+    font-size: 1rem;
+    white-space: nowrap; /* منع التفاف النص */
+}
+
+/* Notifications Floating Container */
+.notifications-floating-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 350px;
+}
+
+.notification {
+    background-color: var(--card-background);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: var(--shadow-large);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    animation: slideInFromRight 0.5s ease-out forwards;
+    position: relative;
+    overflow: hidden; /* لإخفاء الشريط الجانبي في البداية */
+}
+
+body.dark .notification {
+    background-color: var(--dark-card-background);
+}
+
+.notification-icon {
+    font-size: 1.2rem;
+}
+
+.notification-close-button {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: auto;
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+}
+
+.notification-close-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* أنواع الإشعارات */
+.notification-info {
+    border-right: 5px solid var(--info-color);
+}
+.notification-success {
+    border-right: 5px solid var(--success-color);
+}
+.notification-error {
+    border-right: 5px solid var(--danger-color);
+}
+
+/* Loading Overlay */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* خلفية شبه شفافة */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001; /* أعلى من كل شيء آخر */
+    color: white;
+    font-size: 1.2rem;
+    backdrop-filter: blur(3px); /* تأثير ضبابي */
+}
+
+.spinner {
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top: 4px solid #fff;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Confirm Dialog */
+.confirm-dialog-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1002; /* أعلى من الـ loading overlay */
+    backdrop-filter: blur(5px);
+}
+
+.confirm-dialog {
+    background-color: var(--card-background);
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: var(--shadow-large);
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+    animation: fadeIn 0.3s ease-out;
+}
+
+body.dark .confirm-dialog {
+    background-color: var(--dark-card-background);
+}
+
+.confirm-message {
+    font-size: 1.1rem;
+    margin-bottom: 25px;
+    line-height: 1.6;
+    color: var(--text-color-primary);
+}
+
+body.dark .confirm-message {
+    color: var(--dark-text-color-primary);
+}
+
+.confirm-dialog-actions {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.confirm-dialog-actions .btn {
+    min-width: 100px;
+    padding: 10px 20px;
+}
+
+/* Theme Toggle Buttons */
+.theme-toggle {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.theme-toggle .btn {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 15px;
+}
+
+/* Animations */
+@keyframes slideInFromRight {
+    0% {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+
+/* Dashboard.css (أمثلة لمتغيرات CSS التي قد تحتاجها) */
+/* هذه المتغيرات يجب أن تكون معرفة في ملف Dashboard.css أو في مكان عام
+   ليتم استخدامها من قبل SettingsPage.css ولتفعيل الوضع الداكن. */
+/*
+:root {
+    --primary-color: #007bff;
+    --primary-rgb: 0, 123, 255;
+    --secondary-color: #6c757d;
+    --success-color: #28a745;
+    --info-color: #17a2b8;
+    --warning-color: #ffc107;
+    --danger-color: #dc3545;
+
+    --background-color-primary: #f8f9fa;
+    --background-color-secondary: #e9ecef;
+    --text-color-primary: #343a40;
+    --text-color-secondary: #6c757d;
+    --text-color-placeholder: #adb5bd;
+    --card-background: #ffffff;
+    --input-background: #ffffff;
+    --border-color: #dee2e6;
+    --shadow-small: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    --shadow-medium: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    --shadow-large: 0 1rem 3rem rgba(0, 0, 0, 0.175);
+}
+
+body.dark {
+    --dark-background-color-primary: #2c2c2c;
+    --dark-background-color-secondary: #3b3b3b;
+    --dark-text-color-primary: #f0f0f0;
+    --dark-text-color-secondary: #b0b0b0;
+    --dark-text-color-placeholder: #808080;
+    --dark-card-background: #3a3a3a;
+    --dark-input-background: #4a4a4a;
+    --dark-border-color: #555555;
+}
+*/
+
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+    .settings-page {
+        padding: 15px;
+    }
+    .form-section {
+        padding: 20px;
+    }
+    .quick-actions-grid {
+        grid-template-columns: 1fr; /* عمود واحد على الشاشات الصغيرة */
+    }
+    .notifications-floating-container {
+        top: 10px;
+        right: 10px;
+        max-width: calc(100% - 20px);
+    }
+    .confirm-dialog {
+        padding: 20px;
+    }
+    .confirm-dialog-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}

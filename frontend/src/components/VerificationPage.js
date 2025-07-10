@@ -5,7 +5,6 @@ import axios from 'axios';
 import KlishaModal from './KlishaModal'; // المسار الصحيح
 import './VerificationPage.css';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     faArrowLeft,
     faUserCheck,
@@ -13,17 +12,25 @@ import {
     faBuilding,
     faCamera,
     faGift,
-    faSpinner, // **NEW: تم إضافة استيراد faSpinner هنا**
+    faSpinner, 
     faCalendarAlt,
     faExclamationTriangle,
-    faTimesCircle, // هذه الأيقونة مستخدمة في رسائل الخطأ
+    faTimesCircle, 
     faBell,
-    faXmark
+    faXmark,
+    faInfoCircle 
 } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api'; 
 
 const generateUniqueId = () => Math.random().toString(36).substring(2, 9);
+
+// قائمة الدول المحظورة لبونص الإيداع
+const DEPOSIT_BONUS_FORBIDDEN_COUNTRIES = [
+    'مصر', 'الأردن', 'سوريا', 'الجزائر', 'فلسطين', 'السودان'
+];
 
 function VerificationPage({ recordId, onBackToDashboard }) {
     const defaultRecord = useRef({
@@ -34,7 +41,7 @@ function VerificationPage({ recordId, onBackToDashboard }) {
         agent_name: '',
         agency_type: '',
         agency_id: '',
-        name_verified: false,
+        name_verified: false, // **مهم: هذا الحقل يجب أن يكون موجوداً في الواجهة**
         crm_account_valid: false,
         mt5_screenshot_received: false,
         agency_affiliation_verified: false,
@@ -43,8 +50,14 @@ function VerificationPage({ recordId, onBackToDashboard }) {
         deposit_bonus_percentage: 0,
         competition_name: 'غير محدد',
         status: 'جاري',
-        prize_published_on_group: false, // False in Python, false in JS
+        prize_published_on_group: false, 
         prize_due_date: '',
+        // تم دمج participated_full_name مع name_matches_docs في الواجهة، لكن name_verified هو التحقق الأول
+        name_matches_docs: false,      
+        age_verified_under_50: false,  
+        previous_win_check: false,     
+        account_fully_documented: false, 
+        country: '', 
     }).current; 
 
     const [record, setRecord] = useState(defaultRecord);
@@ -59,27 +72,12 @@ function VerificationPage({ recordId, onBackToDashboard }) {
     const notificationTimerRef = useRef({});
 
     const showNotification = useCallback((message, type, id = generateUniqueId()) => {
-        if (notificationTimerRef.current[id]) {
-            clearTimeout(notificationTimerRef.current[id]);
-            delete notificationTimerRef.current[id];
-        }
-
-        setNotifications(prev => {
-            const existingNotificationIndex = prev.findIndex(n => n.id === id);
-            if (existingNotificationIndex > -1) {
-                const updatedNotifications = [...prev];
-                updatedNotifications[existingNotificationIndex] = { id, message, type };
-                return updatedNotifications;
-            } else {
-                return [...prev, { id, message, type }];
-            }
-        });
-
-        notificationTimerRef.current[id] = setTimeout(() => {
+        if (notifications.some(notif => notif.id === id)) return; 
+        setNotifications(prev => [...prev, { id, message, type }]);
+        setTimeout(() => {
             setNotifications(prev => prev.filter(notif => notif.id !== id));
-            delete notificationTimerRef.current[id];
         }, 3000);
-    }, []);
+    }, [notifications]);
 
     const removeNotification = useCallback((id) => {
         setNotifications(prev => prev.filter(notif => notif.id !== id));
@@ -286,8 +284,14 @@ function VerificationPage({ recordId, onBackToDashboard }) {
         }
 
         const requiredFields = [
-            'name_verified', 'crm_account_valid', 'agency_affiliation_verified', 'mt5_screenshot_received',
-            'client_name', 'email', 'agency_id', 'prize_due_date'
+            'name_verified', // **تمت إعادته كحقل تحقق مطلوب**
+            'name_matches_docs',      
+            'age_verified_under_50',  
+            'previous_win_check',     
+            'account_fully_documented', 
+            'client_name', 'email', 'agency_id', 'prize_due_date',
+            'crm_account_valid', 'agency_affiliation_verified', 'mt5_screenshot_received',
+            'country' 
         ];
         const missingFields = requiredFields.filter(field => {
             if (typeof record[field] === 'boolean') return !record[field]; 
@@ -304,6 +308,11 @@ function VerificationPage({ recordId, onBackToDashboard }) {
         if (record.prize_type === 'بونص ايداع' && record.deposit_bonus_percentage === 0) {
             missingFields.push('نسبة بونص الإيداع');
         }
+        // التحقق من الدول المحظورة لبونص الإيداع
+        if (record.prize_type === 'بونص ايداع' && DEPOSIT_BONUS_FORBIDDEN_COUNTRIES.includes(record.country)) {
+            missingFields.push(`دولة العميل (${record.country}) محظورة من بونص الإيداع.`);
+        }
+
 
         if (missingFields.length > 0) {
             showNotification(`لا يمكن توليد الكليشة. يرجى إكمال جميع خطوات التحقق وملء البيانات الأساسية المطلوبة: \n- ${missingFields.join('\n- ')}`, "error", generateUniqueId());
@@ -337,7 +346,13 @@ function VerificationPage({ recordId, onBackToDashboard }) {
 
         const finalRequiredFields = [
             'client_name', 'email', 'agency_id', 'prize_due_date',
-            'name_verified', 'crm_account_valid', 'agency_affiliation_verified', 'mt5_screenshot_received'
+            'name_verified', 'crm_account_valid', 'agency_affiliation_verified', 'mt5_screenshot_received',
+            // التحقق من مربعات الاختيار الجديدة قبل النشر
+            'name_matches_docs',      // 2. يجب أن يكون الاسم الذي شارك به مطابق للاسم بالوثائق
+            'age_verified_under_50',  // 3. يجب التحقق من العمر بحيث الحد الأقصى لاضافة جوائز المسابقات هو 50 سنة
+            'previous_win_check',     // 4. يجب التحقق من أن الفائز قد مضى على فوزه شهر إذا فاز مع وكيل مختلف ومدة ستة أشهر مع وكيل مختلف
+            'account_fully_documented', // 5. يجب أن يكون الحساب موثق بشكل كامل
+            'country' 
         ];
         const finalMissingFields = finalRequiredFields.filter(field => {
             if (field === 'account_number' && record.crm_account_valid && (!record.account_number || record.account_number.trim() === '')) return true;
@@ -351,6 +366,11 @@ function VerificationPage({ recordId, onBackToDashboard }) {
         if (record.prize_type === 'بونص ايداع' && record.deposit_bonus_percentage === 0) {
             finalMissingFields.push('نسبة بونص الإيداع');
         }
+        // التحقق من الدول المحظورة لبونص الإيداع قبل النشر
+        if (record.prize_type === 'بونص ايداع' && DEPOSIT_BONUS_FORBIDDEN_COUNTRIES.includes(record.country)) {
+            finalMissingFields.push(`دولة العميل (${record.country}) محظورة من بونص الإيداع.`);
+        }
+
 
         if (finalMissingFields.length > 0) {
             showNotification(`لا يمكن النشر. يرجى إكمال جميع البيانات وخطوات التحقق النهائية:\n- ${finalMissingFields.join('\n- ')}`, "error", generateUniqueId());
@@ -392,6 +412,9 @@ function VerificationPage({ recordId, onBackToDashboard }) {
             </div>
         );
     }
+
+    // دالة مساعدة لتحديد ما إذا كانت الدولة محظورة
+    const isCountryForbidden = DEPOSIT_BONUS_FORBIDDEN_COUNTRIES.includes(record.country);
 
     return (
         <div className="verification-container">
@@ -489,17 +512,96 @@ function VerificationPage({ recordId, onBackToDashboard }) {
                             <FontAwesomeIcon icon={faCalendarAlt} className="input-icon" />
                         </div>
                     </div>
+                    {/* حقل دولة العميل */}
+                    <div className="form-group">
+                        <label htmlFor="country" className="label">دولة العميل:</label>
+                        <input
+                            type="text"
+                            id="country"
+                            name="country"
+                            value={record.country}
+                            onChange={handleChange}
+                            className="input"
+                            placeholder="ادخل دولة العميل"
+                            disabled={loading}
+                        />
+                        {/* ملاحظة الدول المحظورة الثابتة */}
+                        <p className="country-note">
+                            <FontAwesomeIcon icon={faInfoCircle} /> الدول المحظورة من بونص الإيداع: {DEPOSIT_BONUS_FORBIDDEN_COUNTRIES.join(', ')}
+                        </p>
+                        {/* ملاحظة الدول المحظورة الديناميكية (يمكن إبقائها إذا أردت تنبيهاً إضافياً) */}
+                        {record.prize_type === 'بونص ايداع' && isCountryForbidden && (
+                            <p className="country-warning">
+                                <FontAwesomeIcon icon={faExclamationTriangle} /> هذه الدولة محظورة من بونص الإيداع.
+                            </p>
+                        )}
+                    </div>
+                    {/* تجميع الخانتين 1 و 2 معاً (الآن فقط خانة 2) */}
+                    <div className="form-group checkbox-group-stacked"> 
+                        <label className="label">آلية التحقق من الفائز:</label>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="name_verified" // **NEW: هذا هو checkbox "1. المشاركة بالاسم الثلاثي الصحيح"**
+                                name="name_verified"
+                                checked={record.name_verified}
+                                onChange={handleChange}
+                                className="checkbox"
+                                disabled={loading}
+                            />
+                            <label htmlFor="name_verified" className="checkbox-label">1. المشاركة بالاسم الثلاثي الصحيح</label>
+                        </div>
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="name_matches_docs"
+                                name="name_matches_docs"
+                                checked={record.name_matches_docs}
+                                onChange={handleChange}
+                                className="checkbox"
+                                disabled={loading}
+                            />
+                            <label htmlFor="name_matches_docs" className="checkbox-label">2. يجب أن يكون الاسم الذي شارك به مطابق للاسم بالوثائق</label>
+                        </div>
+                        {/* إضافة 5. الحساب موثق بشكل كامل (شخصي وسكن) هنا */}
+                        <div>
+                            <input
+                                type="checkbox"
+                                id="account_fully_documented"
+                                name="account_fully_documented"
+                                checked={record.account_fully_documented}
+                                onChange={handleChange}
+                                className="checkbox"
+                                disabled={loading}
+                            />
+                            <label htmlFor="account_fully_documented" className="checkbox-label">5. الحساب موثق بشكل كامل (شخصي وسكن)</label>
+                        </div>
+                    </div>
+                    {/* إضافة 3. تم التحقق من العمر (الحد الأقصى 50 سنة) هنا */}
                     <div className="form-group">
                         <input
                             type="checkbox"
-                            id="name_verified"
-                            name="name_verified"
-                            checked={record.name_verified}
+                            id="age_verified_under_50"
+                            name="age_verified_under_50"
+                            checked={record.age_verified_under_50}
                             onChange={handleChange}
                             className="checkbox"
                             disabled={loading}
                         />
-                        <label htmlFor="name_verified" className="checkbox-label">تم التأكد من اسم العميل في قائمة الفائزين</label>
+                        <label htmlFor="age_verified_under_50" className="checkbox-label">3. تم التحقق من العمر (الحد الأقصى 50 سنة)</label>
+                    </div>
+                    {/* إضافة 4. تم التحقق من الفوز السابق هنا */}
+                    <div className="form-group">
+                        <input
+                            type="checkbox"
+                            id="previous_win_check"
+                            name="previous_win_check"
+                            checked={record.previous_win_check}
+                            onChange={handleChange}
+                            className="checkbox"
+                            disabled={loading}
+                        />
+                        <label htmlFor="previous_win_check" className="checkbox-label">4. تم التحقق من الفوز السابق (شهر لوكيل مختلف / 6 أشهر مع نفس الوكيل)</label>
                     </div>
                 </div>
 
@@ -541,10 +643,7 @@ function VerificationPage({ recordId, onBackToDashboard }) {
                             )}
                         </div>
                     )}
-                </div>
-
-                <div className="form-section">
-                    <h3 className="sub-heading"><FontAwesomeIcon icon={faBuilding} className="icon" /> 3. التحقق من تبعية الوكالة</h3>
+                    {/* نقل "الحساب متسجل تحت الوكالة الفائزة" إلى هنا */}
                     <div className="form-group">
                         <input
                             type="checkbox"
@@ -558,6 +657,8 @@ function VerificationPage({ recordId, onBackToDashboard }) {
                         <label htmlFor="agency_affiliation_verified" className="checkbox-label">الحساب متسجل تحت الوكالة الفائزة</label>
                     </div>
                 </div>
+
+                {/* تم حذف قسم "3. التحقق من تبعية الوكالة" المنفصل */}
 
                 <div className="form-section">
                     <h3 className="sub-heading"><FontAwesomeIcon icon={faCamera} className="icon" /> 4. تأكيد سكرين شوت MT5</h3>

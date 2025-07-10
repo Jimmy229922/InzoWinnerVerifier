@@ -10,6 +10,7 @@ import FilterModal from './components/FilterModal';
 import PublishedClientsPage from './components/PublishedClientsPage';
 import Sidebar from './components/Sidebar'; 
 import PendingIssuesPage from './components/PendingIssuesPage';
+import SettingsPage from './components/SettingsPage'; // **NEW: استيراد صفحة الإعدادات**
 
 
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api'; 
@@ -21,7 +22,7 @@ function App() {
     const [theme, setTheme] = useState('dark'); // حالة الثيم، الافتراضي هو 'dark'
 
     // حالات البحث والتصفية التي يديرها App.js
-    const [searchQuery, setSearchQuery] = useState('');
+    const [searchQuery, setSearchQuery] = useState(''); 
     const [filterStatus, setFilterStatus] = useState('الكل'); 
     const [filterPublished, setFilterPublished] = useState('الكل');
     const [searchFields, setSearchFields] = useState(['client_name', 'email', 'account_number', 'agency_id']); 
@@ -73,7 +74,7 @@ function App() {
         setDashboardKey(prevKey => prevKey + 1); 
         
         // إعادة تعيين جميع حالات الفلاتر إلى قيمها الافتراضية لضمان عرض كل شيء
-        setSearchQuery('');
+        setSearchQuery(''); 
         setFilterStatus('الكل');
         setFilterPublished('الكل');
         setSearchFields(['client_name', 'email', 'account_number', 'agency_id']); 
@@ -95,6 +96,13 @@ function App() {
     const handleViewPublishedClients = () => {
         setCurrentView('publishedClients');
     };
+
+    // دالة لتغيير البحث من Dashboard
+    const handleSearchChange = useCallback((query) => {
+        setSearchQuery(query);
+        setSearchTrigger(prev => prev + 1); // لتشغيل إعادة الجلب في Dashboard
+    }, []);
+
 
     return (
         <div className="App">
@@ -128,14 +136,15 @@ function App() {
                             key={dashboardKey}
                             onStartNewVerification={handleStartNewVerification}
                             onViewVerification={handleViewVerification}
-                            searchQuery={searchQuery}
+                            searchQuery={searchQuery} 
                             filterStatus={filterStatus}
                             filterPublished={filterPublished}
                             searchFields={searchFields}
                             filterDueDate={filterDueDate}
-                            searchTrigger={searchTrigger}
-                            onOpenFilterModal={() => setShowFilterModal(true)}
+                            onOpenFilterModal={() => setShowFilterModal(true)} 
                             onViewPublishedClients={handleViewPublishedClients}
+                            onSearchChange={handleSearchChange} 
+                            searchTrigger={searchTrigger} 
                         />
                     )}
 
@@ -159,6 +168,13 @@ function App() {
                     {/* إضافة صفحة المعلقات */}
                     {currentView === 'pendingIssues' && (
                         <PendingIssuesPage 
+                            onBackToDashboard={() => setCurrentView('dashboard')}
+                        />
+                    )}
+
+                    {/* **NEW: إضافة صفحة الإعدادات** */}
+                    {currentView === 'settings' && (
+                        <SettingsPage
                             onBackToDashboard={() => setCurrentView('dashboard')}
                         />
                     )}

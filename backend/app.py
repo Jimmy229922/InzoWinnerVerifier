@@ -140,6 +140,8 @@ def get_verifications():
     page = int(request.args.get('page', 1))
     limit = int(request.args.get('limit', 10))
     
+    total_filtered_count = len(filtered_records) # **مهم: العدد الإجمالي بعد الفلترة والترتيب**
+
     start_index = (page - 1) * limit
     end_index = start_index + limit
     
@@ -148,7 +150,7 @@ def get_verifications():
     # Return an object with 'records' and 'total_count' keys
     return jsonify({
         'records': paginated_records,
-        'total_count': len(filtered_records) 
+        'total_count': total_filtered_count # **مهم: إرجاع العدد الإجمالي للسجلات المفلترة**
     })
 
 
@@ -188,6 +190,13 @@ def create_verification():
 
         'prize_published_on_group': new_record_data.get('prize_published_on_group', False), 
         'prize_due_date': new_record_data.get('prize_due_date', ''),
+        # **NEW: حقول التحقق الجديدة**
+        # 'participated_full_name': new_record_data.get('participated_full_name', False), // تم حذف هذا الحقل
+        'name_matches_docs': new_record_data.get('name_matches_docs', False),
+        'age_verified_under_50': new_record_data.get('age_verified_under_50', False),
+        'previous_win_check': new_record_data.get('previous_win_check', False),
+        'account_fully_documented': new_record_data.get('account_fully_documented', False),
+        'country': new_record_data.get('country', ''), # **NEW: حقل الدولة**
     }
 
     records.append(new_record)
@@ -206,6 +215,16 @@ def get_verification(record_id):
         record.setdefault('prize_published_on_group', False) 
         record.setdefault('prize_due_date', '') 
         record.setdefault('status', 'جاري')
+        record.setdefault('prize_type', 'بونص تداولي')
+        record.setdefault('prize_amount', 0)
+        record.setdefault('deposit_bonus_percentage', 0)
+        # **NEW: التأكد من وجود حقول التحقق الجديدة عند الجلب**
+        # record.setdefault('participated_full_name', False) // تم حذف هذا الحقل
+        record.setdefault('name_matches_docs', False)
+        record.setdefault('age_verified_under_50', False)
+        record.setdefault('previous_win_check', False)
+        record.setdefault('account_fully_documented', False)
+        record.setdefault('country', '') # **NEW: حقل الدولة**
         return jsonify(record)
     return jsonify({"message": "Record not found"}), 404
 
@@ -268,6 +287,10 @@ def generate_klisha(record_id):
 
     record.setdefault('prize_published_on_group', False) 
     record.setdefault('prize_due_date', '') 
+    # **مهم: التأكد من وجود هذه الحقول في السجل عند توليد الكليشة**
+    record.setdefault('prize_type', 'بونص تداولي')
+    record.setdefault('prize_amount', 0)
+    record.setdefault('deposit_bonus_percentage', 0)
 
     client_name = record.get('client_name', '')
     email = record.get('email', '')
@@ -276,14 +299,15 @@ def generate_klisha(record_id):
     agent_name = record.get('agent_name', '')
     agency_type = record.get('agency_type', '')
     agency_id = record.get('agency_id', '')
-    prize_type = record.get('prize_type', 'بونص تداولي')
-    deposit_bonus_percentage = record.get('deposit_bonus_percentage', 0)
+    prize_type = record.get('prize_type', 'بونص تداولي') # جلب نوع الجائزة من السجل
+    deposit_bonus_percentage = record.get('deposit_bonus_percentage', 0) # جلب نسبة البونص من السجل
     
     prize_details = ""
+    # **تنسيق سطر الجائزة كما هو مطلوب:**
     if prize_type == 'بونص إيداع':
-        prize_details = f"بونص إيداع بنسبة {deposit_bonus_percentage}%"
-    else:
-        prize_details = f"{prize_amount}$"
+        prize_details = f"{deposit_bonus_percentage}% بونص إيداع"
+    else: # Default or 'بونص تداولي'
+        prize_details = f"{prize_amount}$ بونص تداولي"
 
     klisha = f"""الاسم: {client_name}
 الايميل: {email}
@@ -337,7 +361,7 @@ def get_dashboard_stats():
 
     return jsonify({
         'in_progress_count': in_progress_count,
-        'completed_today_count': completed_today_count,
+        'completed_today': completed_today_count,
         'prize_published_count': prize_published_count,
         'total_records': total_records
     })
@@ -373,7 +397,10 @@ def add_pending_issue():
         "is_sent_to_group": False, # **NEW: خاصية جديدة لتحديد ما إذا تم إرسالها للجروب**
         "created_at": datetime.now().isoformat(),
         "resolved_at": None,
-        "sent_at": None # **NEW: تاريخ ووقت الإرسال للجروب**
+        "sent_at": None, # **NEW: تاريخ ووقت الإرسال للجروب**
+        "prize_type": new_issue_data.get("prize_type", "بونص تداولي"), # **NEW: تفاصيل الجائزة**
+        "prize_amount": new_issue_data.get("prize_amount", 0),
+        "deposit_bonus_percentage": new_issue_data.get("deposit_bonus_percentage", 0)
     }
     issues.append(new_issue)
     app_data["pending_issues"] = issues # Update the pending_issues list in app_data
@@ -452,4 +479,6 @@ def delete_pending_issue(issue_id):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)
+    # **تم إصلاح هذا الجزء: إزالة السطر المكرر وتصحيح المسافات البادئة**
+    port = int(os.environ.get('PORT', 5000)) # استخدام المنفذ من متغير البيئة أو 5000 كافتراضي
+    app.run(debug=True, host='0.0.0.0', port=port) # host='0.0.0.0' للسماح بالاستماع على جميع الواجهات

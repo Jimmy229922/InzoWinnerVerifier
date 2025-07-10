@@ -9,7 +9,8 @@
     background-color: rgba(0, 0, 0, 0.85); /* خلفية شفافة أغمق بكثير لإبراز المودال */
     display: flex;
     justify-content: center;
-    align-items: center; /* توسيط المودال عمودياً */
+    align-items: flex-start; /* **NEW: وضع المودال في أعلى الشاشة عمودياً** */
+    padding-top: var(--spacing-4xl); /* **NEW: مسافة من أعلى الشاشة** */
     z-index: var(--z-modal-backdrop); /* تأكد أنه يظهر فوق كل شيء آخر */
     font-family: var(--font-family);
     direction: rtl;
@@ -27,13 +28,12 @@
     overflow: hidden; /* لإخفاء أي محتوى زائد */
     animation: fadeInScale 0.4s ease-out forwards; /* تأثير ظهور أبطأ قليلاً */
     border: 2px solid var(--primary-color); /* حدود بلون أساسي */
-    /* margin-bottom: var(--spacing-md); تم إزالة هذا الهامش بعد التوسيط العمودي */
 }
 
 @keyframes fadeInScale {
     from {
         opacity: 0;
-        transform: scale(0.8); /* تم تعديل هذا ليتناسق مع التوسيط */
+        transform: scale(0.8); 
     }
     to {
         opacity: 1;
